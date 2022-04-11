@@ -1,19 +1,130 @@
 <template>
-    <h1>Login</h1>
-    <input
-        v-model="name"
-        type="text"
-    />
-    <p>{{ name }}</p>
+    <div class="login-box">
+        <div class="card">
+            <card-header />
+            <div class="card-body">
+                <p class="login-box-msg">
+                    {{ $route.meta.title }}
+                </p>
+                <form @submit.prevent="login">
+                    <div class="input-group mb-3">
+                        <input
+                            id="email"
+                            v-model="email"
+                            autocomplete="email"
+                            autofocus
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            placeholder="Correo electrónico"
+                            required
+                        >
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input
+                            id="password"
+                            v-model="password"
+                            type="password"
+                            class="form-control"
+                            name="password"
+                            placeholder="Contraseña"
+                            required
+                            :class="{ 'is-invalid': errors.hasOwnProperty('email') || errors.hasOwnProperty('password') }"
+                        >
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                        <ShowErrors :errors="errors.email || errors.password" />
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input
+                                    id="remember"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    value=""
+                                >
+                                <label
+                                    class="form-check-label"
+                                    for="defaultCheck1"
+                                >
+                                    Mantener sesión activa
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button
+                                class="btn btn-primary btn-block"
+                                type="submit"
+                            >
+                                Iniciar sesión
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="social-auth-links text-center mb-3"></div>
+                <p class="mb-1">
+                    <router-link :to="{ name: 'password.email' }">
+                        ¿Olvidó su contraseña?
+                    </router-link>
+                </p>
+                <p class="mb-0">
+                    <router-link
+                        :to="{ name: 'register' }"
+                        class="text-center"
+                    >
+                        Registrarse
+                    </router-link>
+                </p>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-//import { useUserStore } from "@/store/";
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/";
+import axios from "axios";
+import CardHeader from '@/views/auth/CardHeader.vue';
+import ShowErrors from '@/components/ShowErrors.vue';
 
-const name = ref(null);
-name.value = "Example"
+const email = ref(null);
+const password = ref(null);
+const errors = reactive({});
+const store = useUserStore();
+const router = useRouter();
 
-//const user = useUserStore();
+const login = () => {
+    axios.post(import.meta.env.VITE_API_ENDPOINT + '/api/v1/f/login', {
+        email: email.value,
+        password: password.value,
+    })
+        .then((response) => {
+            store.auth(response.data);
+            router.push({ name: 'home' });
+        })
+        .catch(error => {
+            errors.email = null;
+            errors.password = null;
+            if(error.response.data.errors.hasOwnProperty("email")) {
+                errors.email = error.response.data.errors.email;
+            } else {
+                errors.password = error.response.data.errors.password;
+            }
+        })
+}
 
+document.body.classList.add('login-page')
+document.body.removeAttribute('style')
 </script>

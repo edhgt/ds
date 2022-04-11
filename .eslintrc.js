@@ -12,6 +12,7 @@ module.exports = {
     "indent": ["error", 4],
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-unused-vars": process.env.NODE_ENV === "production" ? 2 : 1,
     //"vue/attributes-order": "off",
     //"vue/html-closing-bracket-newline": "off",
     "vue/html-indent": ["error", 4,  { alignAttributesVertically: true }],
