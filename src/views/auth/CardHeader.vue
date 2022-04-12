@@ -13,7 +13,7 @@
 export default {
     data() {
         return {
-            APP_TITLE: import.meta.env.VITE_TITLE
+            APP_TITLE: import.meta.env.VITE_APP_TITLE
         }
     }
 }

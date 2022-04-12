@@ -6,14 +6,14 @@ const routes = [
     {
         name: "welcome",
         path: "/",
-        component: () => import("@/views/Layout.vue"),
+        component: () => import("@/views/Welcome.vue"),
         meta: { title: 'Welcome' },
     },
     {
         name: "home",
         path: "/home",
         component: () => import("@/views/Layout.vue"),
-        meta: { title: 'Home', requiresAuth: true },
+        meta: { title: 'Inicio', requiresAuth: true },
     },
     ...authRoutes,
 ];
@@ -31,11 +31,6 @@ router.beforeEach((to, from, next) => {
 
     if (to.meta.requiresAuth && !store.isLoggedIn) next({ name: 'login', query: { next: to.name } });
     else next();
-    /*if (to.name !== 'login' && to.meta.requireAuth && sessionStorage.access_token !== null) {
-        next({ name: 'login', query: { next: to.name } })
-    } else {
-        next()
-    }*/
 });
 
 export default router;

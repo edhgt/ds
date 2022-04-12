@@ -83,7 +83,7 @@
                         :to="{ name: 'register' }"
                         class="text-center"
                     >
-                        Registrarse
+                        Registro de usuario
                     </router-link>
                 </p>
             </div>
@@ -93,7 +93,7 @@
 
 <script setup>
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useUserStore } from "@/store/";
 import axios from "axios";
 import CardHeader from '@/views/auth/CardHeader.vue';
@@ -104,6 +104,7 @@ const password = ref(null);
 const errors = reactive({});
 const store = useUserStore();
 const router = useRouter();
+const route = useRoute();
 
 const login = () => {
     axios.post(import.meta.env.VITE_API_ENDPOINT + '/api/v1/f/login', {
@@ -112,7 +113,7 @@ const login = () => {
     })
         .then((response) => {
             store.auth(response.data);
-            router.push({ name: 'home' });
+            router.push({ name: route.query.next || 'home' });
         })
         .catch(error => {
             errors.email = null;

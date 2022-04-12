@@ -15,7 +15,7 @@
                 <li class="nav-item">
                     <span class="nav-link">
                         <i class="fas fa-circle text-success"></i>
-                        {{ store.user.name }} ({{ store.user.nit }})
+                        {{ store.user.name }} ({{ store.user.email }})
                     </span>
                 </li>
             </ul>
@@ -72,7 +72,9 @@
                     class="brand-image img-circle elevation-3"
                     style="opacity: .8"
                 >
-                <span class="brand-text font-weight-light">sss</span>
+                <span class="brand-text font-weight-light text-center">
+                    {{ APP_BRAND }}
+                </span>
             </a>
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
@@ -106,7 +108,7 @@
                             >
                                 <i class="nav-icon fas fa-home"></i>
                                 <p>
-                                    Home
+                                    Inicio
                                 </p>
                             </router-link>
                         </li>
@@ -125,7 +127,17 @@
                 </div>
             </div>
         </div>
-        <footer class="main-footer"></footer>
+        <footer class="main-footer">
+            <strong>
+                <a
+                    href="https://www.mineco.gob.gt"
+                    target="_blank"
+                >
+                    Ministerio de Economía
+                </a>
+            </strong>
+            Dirección de Servicios al Comercio y a la Inversión
+        </footer>
         <aside class="control-sidebar control-sidebar-dark">
             <div class="p-3">
                 <h5>Personalizar app</h5>
@@ -161,6 +173,7 @@ import { onMounted } from "vue";
 import { useUserStore } from "@/store";
 
 const store = useUserStore();
+const APP_BRAND = import.meta.env.VITE_APP_BRAND
 
 const setDarkMode = (evt) => {
     if(evt.target.checked) {
