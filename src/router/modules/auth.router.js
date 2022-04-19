@@ -12,6 +12,18 @@ export default [
         meta: { title: 'Registro de usuario' }
     },
     {
+        path: '/email/verify',
+        name: 'verification.notice',
+        component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/notice.vue'),
+        meta: { title: 'Su cuenta no ha sido verificadas' }
+    },
+    {
+        path: '/email/verify/:id/:hash',
+        name: 'verification.verify',
+        component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/verify.vue'),
+        meta: { title: 'Confirmación de cuenta' }
+    },
+    {
         path: '/password/reset',
         name: 'password.email',
         component: () => import(/* webpackChunkName: "auth" */ '@/views/auth/password/email.vue'),

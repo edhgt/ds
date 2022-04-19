@@ -1,7 +1,7 @@
 <template>
     <div class="login-box">
         <div class="card">
-            <card-header />
+            <CardHeader />
             <div class="card-body">
                 <p class="login-box-msg">
                     {{ $route.meta.title }}
@@ -74,7 +74,7 @@
                 </form>
                 <div class="social-auth-links text-center mb-3"></div>
                 <p class="mb-1">
-                    <router-link :to="{ name: 'password.email' }">
+                    <router-link :to="{ name: 'password.email', query: { email: email } }">
                         ¿Olvidó su contraseña?
                     </router-link>
                 </p>
@@ -99,12 +99,13 @@ import axios from "axios";
 import CardHeader from '@/views/auth/CardHeader.vue';
 import ShowErrors from '@/components/ShowErrors.vue';
 
-const email = ref(null);
+const route = useRoute();
+const email = ref(route.query.email);
 const password = ref(null);
 const errors = reactive({});
 const store = useUserStore();
 const router = useRouter();
-const route = useRoute();
+
 
 const login = () => {
     axios.post(import.meta.env.VITE_API_ENDPOINT + '/api/v1/f/login', {

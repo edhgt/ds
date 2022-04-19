@@ -16,11 +16,21 @@ export const useUserStore = defineStore("userStore", {
         logout() {
             sessionStorage.clear();
             this.access_token = null;
+            this.user = {}
         }
     },
     getters: {
         isLoggedIn(state) {
             return state.access_token !== null;
         },
+        isVerified(state) {
+            return state.user.email_verified_at != null
+        },
+        isQualified(state) {
+            return state.user.email_verified_at != null && state.user.calificada != null
+        },
+        isAdmin(state) {
+            return state.user.role_id == 2
+        }
     },
 });

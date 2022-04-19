@@ -54,7 +54,7 @@
                     <a
                         class="nav-link"
                         href="#"
-                        @click="store.logout()"
+                        @click="logout"
                     >
                         <i class="fas fa-sign-out-alt" />
                     </a>
@@ -70,7 +70,6 @@
                     src="@/assets/logo.png"
                     alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3"
-                    style="opacity: .8"
                 >
                 <span class="brand-text font-weight-light text-center">
                     {{ APP_BRAND }}
@@ -86,12 +85,12 @@
                         />
                     </div>
                     <div class="info">
-                        <a
+                        <router-link
                             class="d-block"
-                            href="#"
+                            :to="{ name: 'profile' }"
                         >
                             {{ store.user.nit }}
-                        </a>
+                        </router-link>
                     </div>
                 </div>
                 <nav class="mt-2">
@@ -112,6 +111,17 @@
                                 </p>
                             </router-link>
                         </li>
+                        <li class="nav-item">
+                            <router-link
+                                :to="{ name: 'profile' }"
+                                class="nav-link"
+                            >
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>
+                                    Perfil
+                                </p>
+                            </router-link>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -126,6 +136,11 @@
                     </div>
                 </div>
             </div>
+            <section class="content">
+                <div class="container-fluid">
+                    <router-view />
+                </div>
+            </section>
         </div>
         <footer class="main-footer">
             <strong>
@@ -170,10 +185,12 @@
 
 <script setup>
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
 
 const store = useUserStore();
 const APP_BRAND = import.meta.env.VITE_APP_BRAND
+const router = useRouter();
 
 const setDarkMode = (evt) => {
     if(evt.target.checked) {
@@ -191,6 +208,11 @@ const setLayoutFixed = (evt) => {
         return
     }
     document.body.classList.remove("layout-navbar-fixed");
+}
+
+const logout = () => {
+    store.logout();
+    router.push({ name: 'welcome' });
 }
 
 onMounted(() => {

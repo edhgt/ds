@@ -83,7 +83,7 @@
                 <hr class="mb-5">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-md-6 col-lg-4">
-                        <router-link :to="{ name: 'register', query: { decreto_id: 2, role_id: 2 } }">
+                        <router-link :to="{ name: 'register', query: { decreto_id: 2 } }">
                             <div class="card portfolio-item mx-auto">
                                 <div class="card-body">
                                     <h4 class="card-title">
