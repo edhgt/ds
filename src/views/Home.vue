@@ -39,7 +39,6 @@ const toast = useToast();
 onMounted(() => {
     if(store.isVerified && !store.isQualified) {
         toast.info("Empresa no calificada", {
-            timeout: false,
             position: "bottom-right",
         });
     }

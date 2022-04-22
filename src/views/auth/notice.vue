@@ -1,5 +1,5 @@
 <template>
-    <div class="lockscreen-wrapper">
+    <div class="lockscreen-wrapper shadow-lg p-3 mb-5 bg-white rounded">
         <Loader
             :is-visible="isVisible"
             msg="Solicitando enlace de verificación de cuenta..."

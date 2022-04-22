@@ -43,24 +43,6 @@
                         </div>
                         <ShowErrors :errors="errors.email || errors.password" />
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input
-                                    id="remember"
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value=""
-                                >
-                                <label
-                                    class="form-check-label"
-                                    for="defaultCheck1"
-                                >
-                                    Mantener sesión activa
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row mt-3">
                         <div class="col-12">
                             <button
