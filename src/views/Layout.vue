@@ -1,4 +1,7 @@
 <template>
+    <Loader
+        :is-visible="store.isLoader"
+    />
     <div class="wrapper">
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
@@ -14,20 +17,25 @@
                 </li>
                 <li class="nav-item">
                     <span class="nav-link">
-                        <i class="fas fa-circle text-success"></i>
                         {{ store.user.name }} ({{ store.user.email }})
                     </span>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a
+                    <router-link
                         class="nav-link"
-                        href="#"
-                        role="button"
+                        :to="{ name: 'notificaciones.index' }"
+                        title="Notificaciones"
                     >
                         <i class="far fa-bell" />
-                    </a>
+                        <span
+                            v-show="store.notificationCounter > 0"
+                            class="badge badge-warning navbar-badge"
+                        >
+                            {{ store.notificationCounter }}
+                        </span>
+                    </router-link>
                 </li>
                 <li class="nav-item">
                     <a
@@ -35,6 +43,7 @@
                         data-widget="fullscreen"
                         href="#"
                         role="button"
+                        title="Pantalla completa"
                     >
                         <i class="fas fa-expand-arrows-alt" />
                     </a>
@@ -46,6 +55,7 @@
                         data-controlsidebar-slide="true"
                         href="#"
                         role="button"
+                        title="Personalización"
                     >
                         <i class="fas fa-th-large" />
                     </a>
@@ -54,6 +64,7 @@
                     <a
                         class="nav-link"
                         href="#"
+                        title="Cerrar sesión"
                         @click="logout"
                     >
                         <i class="fas fa-sign-out-alt" />
@@ -122,6 +133,20 @@
                                 </p>
                             </router-link>
                         </li>
+                        <li
+                            v-if="store.isQualified"
+                            class="nav-item"
+                        >
+                            <router-link
+                                class="nav-link"
+                                :to="{ name: 'tramites.index' }"
+                            >
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>
+                                    Trámites
+                                </p>
+                            </router-link>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -130,9 +155,11 @@
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
-                        <h1 class="m-0">
-                            {{ $route.meta.title }}
-                        </h1>
+                        <div class="col-12">
+                            <h1>
+                                {{ $route.meta.title }}
+                            </h1>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -143,6 +170,7 @@
             </section>
         </div>
         <footer class="main-footer">
+            Dirección de Servicios al Comercio y a la Inversión
             <strong>
                 <a
                     href="https://www.mineco.gob.gt"
@@ -151,7 +179,6 @@
                     Ministerio de Economía
                 </a>
             </strong>
-            Dirección de Servicios al Comercio y a la Inversión
         </footer>
         <aside class="control-sidebar control-sidebar-dark">
             <div class="p-3">
@@ -187,6 +214,7 @@
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store";
+import Loader from "@/components/Loader.vue"
 
 const store = useUserStore();
 const APP_BRAND = import.meta.env.VITE_APP_BRAND

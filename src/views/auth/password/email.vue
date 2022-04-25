@@ -1,6 +1,6 @@
 <template>
     <div class="login-box">
-         <Loader
+        <Loader
             :is-visible="isVisible"
             :msg="msg"
         />
@@ -81,22 +81,22 @@ const submit = () => {
             email: email.value,
         }
     )
-    .then(() => {
-        isVisible.value = false
-        toast.success('Le hemos enviado por correo electrónico el enlace para restablecer su contraseña', {
-            timeout: false,
-            position: 'top-center',
+        .then(() => {
+            isVisible.value = false
+            toast.success('Le hemos enviado por correo electrónico el enlace para restablecer su contraseña', {
+                timeout: false,
+                position: 'top-center',
+            })
         })
-    })
-    .catch((error) => {
-        isVisible.value = false
+        .catch((error) => {
+            isVisible.value = false
 
-        if (error.response.status === 500) {
-            errors.email = ['No fue posible procesar la solicitud en este momento. Por favor, intente más tarde.']
-            return
-        }
-        errors.email = error.response.data.errors.email
-    })
+            if (error.response.status === 500) {
+                errors.email = ['No fue posible procesar la solicitud en este momento. Por favor, intente más tarde.']
+                return
+            }
+            errors.email = error.response.data.errors.email
+        })
 }
 
 document.body.classList.add('login-page')

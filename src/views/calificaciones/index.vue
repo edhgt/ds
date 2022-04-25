@@ -1,36 +1,54 @@
 <template>
     <div class="row">
+        <div class="col-12 mb-2">
+            <a
+                href="#"
+                @click="router.back(1)"
+            >
+                <i class="fas fa-arrow-left fa-lg"></i>
+                Volver
+            </a>
+        </div>
         <div class="col-12">
             <div class="invoice p-3 mb-3 text-center">
                 <p>
-                    <strong class="h3">
+                    <strong class="h1">
                         {{ state.tramite.name }}
                     </strong>
-                    <small class="d-block text-muted">
+                    <small class="d-block text-muted h2">
                         {{ state.tramite.description }}
                     </small>
                     <small
-                        class="d-block text-muted"
                         v-show="state.tramite.processInstanceId != null"
+                        class="d-block text-muted"
                     >
-                        Estado:
-                        <b>
-                            {{ state.tramite.estado }}
-                        </b>
+                        <span v-show="state.tramite.estado">
+                            Estado:
+                            <b>
+                                {{ state.tramite.estado }}
+                            </b>
+                        </span>
                     </small>
                 </p>
                 <button
+                    v-if="state.tramite.processInstanceId == null && $route.query.key != null"
                     class="btn btn-primary btn-lg"
                     @click="getProcessDefinition"
-                    v-if="state.tramite.processInstanceId == null"
                 >
-                    Iniciar proceso de calificación
+                    Iniciar proceso de {{ state.tramite.name }}
                 </button>
+                <p
+
+                    v-if="$route.query.key == null"
+                    class="efecto-maquina text-danger text-lead justify h5"
+                >
+                    Trámite no disponible.
+                </p>
             </div>
         </div>
-        <div class="col-6 offset-md-3" >
+        <div class="col-6 offset-md-3">
             <div
-                v-if="state.tramite.processInstanceId != null && state.tramite.estado_id == 3"
+                v-if="state.form.hasOwnProperty('fields')"
                 class="card"
             >
                 <div class="card-header">
@@ -75,13 +93,13 @@
                                 <label :for="field.id">
                                     {{ field.name }}
                                     <small class="text-muted">
-                                        {{ field.required ? '' : '(opcional)'}}
+                                        {{ field.required ? '' : '(opcional)' }}
                                     </small>
                                 </label>
                                 <Field
                                     :id="field.id"
-                                    :name="field.name.toLowerCase()"
                                     v-model="field.value"
+                                    :name="field.name.toLowerCase()"
                                     class="form-control"
                                     :placeholder="field.placeholder"
                                     type="number"
@@ -94,13 +112,13 @@
                                 <label :for="field.id">
                                     {{ field.name }}
                                     <small class="text-muted">
-                                        {{ field.required ? '' : '(opcional)'}}
+                                        {{ field.required ? '' : '(opcional)' }}
                                     </small>
                                 </label>
                                 <Field
                                     :id="field.id"
-                                    :name="field.name.toLowerCase()"
                                     v-model="field.value"
+                                    :name="field.name.toLowerCase()"
                                     class="form-control"
                                     :placeholder="field.placeholder"
                                     type="number"
@@ -118,9 +136,9 @@
                                 <br>
                                 <Field
                                     :id="field.id"
-                                    :name="field.name.toLowerCase()"
-                                    type='checkbox'
                                     v-model.boolean="field.value"
+                                    :name="field.name.toLowerCase()"
+                                    type="checkbox"
                                     :placeholder="field.placeholder"
                                     :value="true"
                                     :rules="{ required: field.required }"
@@ -128,25 +146,28 @@
                                 <ErrorMessage
                                     :name="field.name.toLowerCase()"
                                     class="d-block"
-                                 />
+                                />
                             </span>
                             <span v-else-if="field.type == 'dropdown' || field.type == 'radio-buttons'">
                                 <label :for="field.id">
                                     {{ field.name }}
                                     <small class="text-muted">
-                                        {{ field.required ? '' : '(opcional)'}}
+                                        {{ field.required ? '' : '(opcional)' }}
                                     </small>
                                 </label>
                                 <Field
                                     :id="field.id"
+                                    v-slot="{ value }"
                                     v-model="field.value"
                                     :name="field.name.toLowerCase()"
                                     as="select"
                                     class="form-control"
                                     :rules="{ required: field.required }"
-                                    v-slot="{ value }"
                                 >
-                                    <option value="" disabled></option>
+                                    <option
+                                        value=""
+                                        disabled
+                                    ></option>
                                     <option
                                         v-for="option in field.options"
                                         :key="option.name"
@@ -173,31 +194,31 @@
                                 <label>
                                     {{ field.name }}
                                     <small class="text-muted">
-                                        {{ field.required ? '' : '(opcional)'}}
+                                        {{ field.required ? '' : '(opcional)' }}
                                     </small>
                                     <span
-                                        class="badge badge-success"
                                         v-show="field.value != null"
+                                        class="badge badge-success"
                                     >
-                                        cargado correctamente
+                                        cargado en el sistema
                                     </span>
                                 </label>
                                 <br>
                                 <Field
+                                    v-slot="{ handleChange, handleBlur }"
+                                    v-model="field.value"
                                     :name="field.name.toLowerCase()"
                                     as="file"
-                                    v-slot="{ handleChange, handleBlur }"
-                                    @change="uploadFile"
                                     :rules="{ required: field.required }"
-                                    v-model="field.value"
                                     :data-index="index"
+                                    @change="uploadFile"
                                 >
                                     <input
                                         type="file"
-                                        @change="handleChange"
-                                        @blur="handleBlur"
                                         :data-index="index"
                                         :data-id="field.id"
+                                        @change="handleChange"
+                                        @blur="handleBlur"
                                     />
                                 </Field>
                                 <br>
@@ -210,13 +231,13 @@
                                 <label :for="field.id">
                                     {{ field.name }}
                                     <small class="text-muted">
-                                        {{ field.required ? '' : '(opcional)'}}
+                                        {{ field.required ? '' : '(opcional)' }}
                                     </small>
                                 </label>
                                 <Field
                                     :id="field.id"
-                                    :name="field.name.toLowerCase()"
                                     v-model="field.value"
+                                    :name="field.name.toLowerCase()"
                                     class="form-control"
                                     :placeholder="field.placeholder"
                                     :type="field.type"
@@ -241,7 +262,7 @@
 </template>
 
 <script>
-import { toRef, reactive } from "vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/";
 import { useToast } from "vue-toastification";
@@ -252,20 +273,19 @@ import { localize } from "@vee-validate/i18n";
 import es from '@vee-validate/i18n/dist/locale/es.json';
 
 export default {
-    props: {
-        id: {
-            required: false,
-            type: Number,
-            default: null,
-        },
-    },
     components: {
         Field,
         Form,
         ErrorMessage,
     },
+    props: {
+        id: {
+            required: false,
+            type: String,
+            default: null,
+        },
+    },
     setup(props) {
-        const id = toRef(props, "id");
         
         const state = reactive({
             tramite: {},
@@ -276,41 +296,40 @@ export default {
         const toast = useToast();
         const router = useRouter();
 
-        axios.get(import.meta.env.VITE_API_ENDPOINT + (id.value != null ? `/api/v1/f/tramites/${id.value}` : '/api/v1/f/calificaciones'), {
+        axios.get(import.meta.env.VITE_API_ENDPOINT + (props.id != null ? `/api/v1/f/tramites/${props.id}` : '/api/v1/f/calificaciones'), {
             params: {
                 decreto_id: store.user.decreto_id
             }
         })
-        .then((response) => {
-            state.tramite = response.data
+            .then((response) => {
+                state.tramite = response.data
 
-            if (state.tramite.estado_id === 2) {
-                toast.success('La empresa se encuentra calificada')
-                store.auth({
-                    access_token: store.user.access_token,
-                    user: {
-                        ...store.user,
-                        calificada: 1,
-                    },
-                })
-                router.push({ name: 'home' })
-            }
-            if(state.tramite.processInstanceId != null) {
-                getTasks('active')
-            }
-        })
-        .catch(err => {
-            toast.error(err.response.data.message || err.response.data)
-        });
+                if (state.tramite.estado_id === 2) {
+                    toast.success('La empresa se encuentra calificada')
+                    store.auth({
+                        access_token: sessionStorage.getItem('access_token'),
+                        user: {
+                            ...JSON.parse(sessionStorage.getItem('user')),
+                            calificada: 1,
+                        },
+                    })
+                    router.push({ name: 'home' })
+                } else {
+                    getTasks()
+                }
+            })
+            .catch(err => {
+                toast.error(err.response.data.message || err.response.data)
+            });
         const getProcessDefinition = () => {
             axios.get('/api/v1/f/process-definitions', {
                 params: { key: state.tramite.key }
             })
-            .then(response => {
-                state.tramite.processDefinitionId = response.data.id
-                startProcess()
-            })
-            .catch(err => toast.error(err.response.data.message || err.response.data))
+                .then(response => {
+                    state.tramite.processDefinitionId = response.data.id
+                    startProcess()
+                })
+                .catch(err => toast.error(err.response.data.message || err.response.data))
         };
         const startProcess = () => {
             axios.post('/api/v1/f/start-process', {
@@ -320,13 +339,13 @@ export default {
                 tramite_id: state.tramite.id,
                 nit: store.user.nit
             })
-            .then(response => {
-                state.tramite.processInstanceId = response.data.id
-                state.tramite.estado = "En ingreso"
-                state.tramite.estado_id = 3
-                getTasks()
-            })
-            .catch(err => toast.error(err.response.data.message || err.response.data))
+                .then(response => {
+                    state.tramite.processInstanceId = response.data.id
+                    state.tramite.estado = "En ingreso"
+                    state.tramite.estado_id = 3
+                    getTasks()
+                })
+                .catch(err => toast.error(err.response.data.message || err.response.data))
         };
         const getTasks = () => {
             axios.get('/api/v1/f/tasks', {
@@ -335,13 +354,13 @@ export default {
                     nit: store.user.nit
                 }
             })
-            .then((response) => {
-                if (response.data.data.length !== 0) {
-                    state.tramite.taskId = response.data.data[0].id
-                    getFormDefinitions()
-                }
-            })
-            .catch(err => toast.error(err.response.data.message || err.response.data))
+                .then((response) => {
+                    if (response.data.data.length !== 0) {
+                        state.tramite.taskId = response.data.data[0].id
+                        getFormDefinitions()
+                    }
+                })
+                .catch(err => toast.error(err.response.data.message || err.response.data))
         };
         const getFormDefinitions = () => {
             axios.get('/api/v1/f/tasks/' + state.tramite.taskId + '/form', {
@@ -349,14 +368,19 @@ export default {
                     nit: store.user.nit
                 }
             })
-            .then(response => {
-                state.form = response.data
-                getFilesLocal()
-            })
-            .catch(err => toast.error(err.response.data.message || err.response.data))
+                .then(response => {
+                    state.form = response.data
+                    getFilesLocal()
+                })
+                .catch(err => toast.error(err.response.data.message || err.response.data))
         };
         const getFilesLocal = () => {
-            axios.get('/api/v1/f/tasks/' + state.tramite.taskId + '/files')
+            axios.get('/api/v1/f/tasks/files/saves', {
+                params: {
+                    processInstanceId: state.tramite.processInstanceId,
+                    taskId: state.tramite.taskId,
+                },
+            })
                 .then((response) => {
                     if (response.data.length > 0) {
                         response.data.forEach((fileSaved) => {
@@ -380,27 +404,22 @@ export default {
                 properties: [...state.form.fields],
                 nit: store.user.nit
             })
-            .then(() => {
-                state.tramite.estado = 'En proceso'
-                state.tramite.estado_id = 4
-            })
-            .catch((error) => {
-                toast.error(error.response.data.message || error.response.data, { timeout: false })
-            })
+                .then(() => {
+                    state.tramite.estado = 'Verificación y Revisión de Solicitud'
+                    state.tramite.estado_id = 4
+                    state.form = {}
+                    toast.success("Su expediente fue enviado a Verificación y Revisión")
+                })
+                .catch((error) => {
+                    toast.error(error.response.data.message || error.response.data, { timeout: false })
+                })
         };
-        const onInvalidSubmit = () => {
-            const submitBtn = document.querySelector(".submit-btn");
-            submitBtn.classList.add("invalid");
-            setTimeout(() => {
-                submitBtn.classList.remove("invalid");
-            }, 1000);
-        }
 
         defineRule('integer', integer);
         defineRule('regex', regex);
         defineRule('required', required);
         configure({
-        generateMessage: localize('es', es),
+            generateMessage: localize('es', es),
         });
 
         const uploadFile = (evt) => {
@@ -432,7 +451,6 @@ export default {
         };
 
         return {
-            id,
             state,
             store,
             toast,
@@ -449,7 +467,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 input + span {
   color: #f23648;
   font-size: 14px;
@@ -457,5 +475,19 @@ input + span {
 select + span {
   color: #f23648;
   font-size: 14px;
+}
+p.efecto-maquina {
+    font-family: monospace;
+    white-space: nowrap;
+    width: 22ch;
+    animation: typing 2s steps(22), blink .5s infinite step-end alternate;
+    overflow: hidden;
+}
+@keyframes typing {
+    from { width: 0 }
+}
+
+@keyframes blink {
+    50% { border-color: transparent;}
 }
 </style>

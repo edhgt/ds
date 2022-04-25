@@ -1,11 +1,15 @@
 import axios from 'axios'
+import { useUserStore } from "@/store";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_ENDPOINT
 axios.defaults.headers.common.Accept = 'application/json'
 
 //axios.defaults.headers.Authorization = 'Bearer ' + sessionStorage.access_token
 
+const store = useUserStore();
+
 axios.interceptors.request.use(config => {
+    store.isLoader = true;
     config.headers.Authorization = 'Bearer ' + sessionStorage.access_token
     return config
 }, (error) => {
@@ -13,8 +17,10 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use((response) => {
+    store.isLoader = false;
     return response
 }, (error) => {
+    store.isLoader = false;
     if (error.response.status === 403) {
         //window.location.href = "/"
     }

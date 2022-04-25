@@ -16,7 +16,7 @@ export default {
     name: 'Loader',
     props: {
         isVisible: { type: Boolean, required: false, default: false },
-        msg: { type: String, required: false, default: null }
+        msg: { type: String, required: false, default: "Cargando..." }
     }
 }
 </script>

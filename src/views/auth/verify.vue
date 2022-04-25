@@ -30,27 +30,27 @@ onMounted(() => {
     axios.post(`${import.meta.env.VITE_API_ENDPOINT}/api/v1/f/email/verify/${route.params.id}/${route.params.hash}`, {
         id: route.params.id
     })
-    .then((response) => {
-        if(response.data.hasOwnProperty("access_token")) {
-            toast.success("Su cuenta fue verificada", {
-                timeout: false,
-                position: "bottom-right",
-            });
-            store.auth(response.data);
-            router.push({ name: "home" });
-        } else {
-            toast.success(response.data.message, {
-                position: "top-center",
-            });
-            router.push({ name: "welcome" });
-        }
+        .then((response) => {
+            if(response.data.access_token) {
+                toast.success("Su cuenta fue verificada", {
+                    timeout: false,
+                    position: "bottom-right",
+                });
+                store.auth(response.data);
+                router.push({ name: "home" });
+            } else {
+                toast.success(response.data.message, {
+                    position: "top-center",
+                });
+                router.push({ name: "welcome" });
+            }
 
-    })
-    .catch((error) => {
-        toast.error(error.response.data.message, {
-            timeout: false
-        });
-    })
+        })
+        .catch((error) => {
+            toast.error(error.response.data.message, {
+                timeout: false
+            });
+        })
 });
 
 document.body.classList.add("lockscreen")

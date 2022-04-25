@@ -83,14 +83,28 @@
                 <hr class="mb-5">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-md-6 col-lg-4">
+                        <router-link :to="{ name: 'register', query: { decreto_id: 1 } }">
+                            <div class="card portfolio-item mx-auto">
+                                <div class="card-body">
+                                    <h4 class="card-title">
+                                        29-89
+                                    </h4>
+                                    <p class="card-text text-muted">
+                                        Ley para la Actividad Exportadora
+                                    </p>
+                                </div>
+                            </div>
+                        </router-link>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
                         <router-link :to="{ name: 'register', query: { decreto_id: 2 } }">
                             <div class="card portfolio-item mx-auto">
                                 <div class="card-body">
                                     <h4 class="card-title">
                                         65-89
                                     </h4>
-                                    <p class="card-text">
-                                        Ley de Zonas<br>Francas
+                                    <p class="card-text text-muted">
+                                        Ley de Zonas Francas
                                     </p>
                                 </div>
                             </div>

@@ -1,5 +1,17 @@
 <template>
     <div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                <a
+                    href="#"
+                    role="button"
+                    @click="getList"
+                >
+                    <i class="fas fa-sync"></i>
+                    Actualizar
+                </a>
+            </div>
+        </div>
         <div
             v-if="notificaciones.data.length > 0"
             class="row"
@@ -12,7 +24,7 @@
                 >
                     <div
                         class="card-body"
-                        :class="{ 'bg-secondary': not.read_at == null }"
+                        :class="{ 'bg-gray disabled color-palette': not.read_at == null }"
                     >
                         <h5 class="card-title">
                             {{ not.data.title }}
@@ -49,14 +61,6 @@
                             <i class="fas fa-bell-slash"></i>
                             No hay notificaciones en este momento
                         </h4>
-                        <p class="lead mb-5">
-                            <button
-                                class="btn btn-primary"
-                                @click="getList"
-                            >
-                                Actualizar
-                            </button>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -66,6 +70,9 @@
 
 <script>
 import axios from '@/config/axios'
+import { useUserStore } from "@/store";
+
+const store = useUserStore();
 
 export default {
     filters: {
@@ -86,17 +93,21 @@ export default {
             axios.get('/api/v1/f/notificaciones')
                 .then(response => {
                     this.notificaciones = response.data
-                    this.notificaciones.data.forEach(not => {
-                        not.data = JSON.parse(not.data)
+                    store.notificationCounter = 0
+                    this.notificaciones.data.forEach(notification => {
+                        if (notification.read_at == null) {
+                            store.notificationCounter++
+                        }
+                        notification.data = JSON.parse(notification.data)
                     })
                 })
         },
         markAsRead (evt) {
-            const not = this.notificaciones.data[evt.target.dataset.index]
-            axios.put('/api/v1/f/notificaciones/' + not.id)
+            const notification = this.notificaciones.data[evt.target.dataset.index]
+            axios.put('/api/v1/f/notificaciones/' + notification.id)
                 .then(response => {
-                    not.read_at = response.data
-                    this.$store.commit('decrementTotalNotificaciones')
+                    notification.read_at = response.data
+                    store.notificationCounter--
                 })
         }
     }

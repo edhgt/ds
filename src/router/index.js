@@ -58,8 +58,16 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title || 'DISERCOMI';
     const store = useUserStore();
 
-    if(!store.isVerified && store.isLoggedIn && to.name == "home") next({ name: 'verification.notice' });
-    else if (to.meta.requiresAuth && !store.isLoggedIn) next({ name: 'login', query: { next: to.name } });
+    if(to.meta.requiresAuth && !store.isVerified && store.isLoggedIn) {
+        next({ name: 'verification.notice' });
+    }
+    else if (to.meta.requiresAuth && !store.isLoggedIn) {
+        if(to.query.next) {
+            next({ name: 'login', query: { next: to.name } });
+        } else {
+            next({ name: 'login' });
+        }
+    }
     else next();
 });
 

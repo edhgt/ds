@@ -31,7 +31,7 @@
                             readonly
                             required
                             type="email"
-                            :class="{ 'is-invalid': state.errors.hasOwnProperty('email')}"
+                            :class="{ 'is-invalid': state.errors.email }"
                         >
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -50,7 +50,7 @@
                             name="password"
                             placeholder="Nueva contraseña"
                             required
-                            :class="{ 'is-invalid': state.errors.hasOwnProperty('password')}"
+                            :class="{ 'is-invalid': state.errors.password }"
                         >
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -81,7 +81,7 @@
                                 type="submit"
                                 class="btn btn-primary btn-block"
                             >
-                                Enviar enlace
+                                Cambiar contraseña
                             </button>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ const submit = () => {
                 return
             }
 
-            if(error.response.data.errors.hasOwnProperty("email")) {
+            if(error.response.data.errors.email) {
                 toast.error('El token ha expirado o el correo electrónico no fue encontrado', {
                     position: "bottom-center",
                 })

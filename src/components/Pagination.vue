@@ -46,6 +46,7 @@ export default {
             type: String,
             default: null
         }
-    }
+    },
+    emits: ['page']
 }
 </script>

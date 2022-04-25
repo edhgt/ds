@@ -34,7 +34,7 @@
                             name="password"
                             placeholder="Contraseña"
                             required
-                            :class="{ 'is-invalid': errors.hasOwnProperty('email') || errors.hasOwnProperty('password') }"
+                            :class="{ 'is-invalid': errors.email || errors.password }"
                         >
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -101,7 +101,7 @@ const login = () => {
         .catch(error => {
             errors.email = null;
             errors.password = null;
-            if(error.response.data.errors.hasOwnProperty("email")) {
+            if(error.response.data.errors.email) {
                 errors.email = error.response.data.errors.email;
             } else {
                 errors.password = error.response.data.errors.password;

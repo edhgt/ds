@@ -10,7 +10,7 @@
         <div class="lockscreen-name">
             {{ store.user.name }} ({{ store.user.email }})
         </div>
-        <div class="help-block text-center mt-4">
+        <div class="help-block text-center mt-4 text-lg">
             Antes de poder continuar, por favor,
             confirme su correo electrónico con el enlace que le hemos enviado.
             Si no ha recibido el email,
@@ -49,22 +49,23 @@ const isVisible = ref(false);
 const resendVerificationEmail = () => {
     isVisible.value = true;
     axios.post(import.meta.env.VITE_API_ENDPOINT + "/api/v1/f/email/verification-notification")
-    .then((response) => {
-        isVisible.value = false;
-        toast.success(response.data.message, {
-            timeout: false,
-        });
+        .then((response) => {
+            isVisible.value = false;
+            toast.success(response.data.message, {
+                timeout: false,
+            });
         
-    })
-    .catch((error) => {
-        isVisible.value = false;
-        toast.error(error.response.data.message, {
-            timeout: false
-        });
-    })
+        })
+        .catch((error) => {
+            isVisible.value = false;
+            toast.error(error.response.data.message, {
+                timeout: false
+            });
+        })
 }
 const logout = () => {
     store.logout();
+    //navigator.href = '/'
     router.push({ name: 'welcome' })
 }
 

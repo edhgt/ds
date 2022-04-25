@@ -5,6 +5,8 @@ export const useUserStore = defineStore("userStore", {
     state: () => ({
         user: JSON.parse(sessionStorage.getItem('user')) || {},
         access_token: sessionStorage.getItem('access_token') || null,
+        notificationCounter: 0,
+        isLoader: false,
     }),
     actions: {
         auth(data) {
@@ -16,8 +18,11 @@ export const useUserStore = defineStore("userStore", {
         logout() {
             sessionStorage.clear();
             this.access_token = null;
-            this.user = {}
-        }
+            this.user = {
+                email_verified_at: null,
+                calificada: null
+            }
+        },
     },
     getters: {
         isLoggedIn(state) {

@@ -51,6 +51,7 @@
                                     <i
                                         class="fas fa-sync fa-lg"
                                         title="Actualizar listado"
+                                        role="button"
                                         @click="getList(tramites.first_page_url)"
                                     ></i>
                                 </th>
@@ -58,16 +59,22 @@
                         </thead>
                         <tbody>
                             <tr
-                                v-for="tra in dataFilter"
-                                :key="tra.id"
+                                v-for="tramite in dataFilter"
+                                :key="tramite.id"
                             >
                                 <td>
-                                    {{ tra.tramite }}
+                                    {{ tramite.tramite }}
                                 </td>
                                 <td>
-                                    {{ tra.estado }}
+                                    {{ tramite.estado }}
                                 </td>
-                                <td class="text-right">
+                                <td
+                                    v-if="tramite.estado_id == 3"
+                                    class="text-right"
+                                >
+                                    <router-link :to="{ name: 'tramites.create', params: { id: tramite.tramite_id }, query: { key: tramite.key }}">
+                                        Completar
+                                    </router-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -89,6 +96,10 @@
 import AppPagination from '@/components/Pagination.vue'
 import axios from '@/config/axios.js'
 
+import { useUserStore } from "@/store";
+
+const store = useUserStore();
+
 export default {
     components: { AppPagination },
     data () {
@@ -104,7 +115,6 @@ export default {
         }
     },
     created () {
-        this.$store.commit('setMessage', 'Obteniendo listado de trámites')
         axios.get('/api/v1/f/tramites', {
             params: {
                 per_page: this.per_page
@@ -122,7 +132,7 @@ export default {
             axios.get(url, {
                 params: {
                     per_page: this.per_page,
-                    empresa_id: this.$store.state.user.empresa_id
+                    empresa_id: store.user.empresa_id
                 }
             })
                 .then(response => {

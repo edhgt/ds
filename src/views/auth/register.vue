@@ -14,12 +14,15 @@
             </router-link>
             <h2>{{ $route.meta.title }}</h2>
             <p class="lead">
-                Por favor, complete los siguientes campos para crear un usuario y posteriormente hacer la solicitud de Calificación al decreto 29-89 o al decreto 65-89.
+                Complete la siguiente información para crear un usuario y posteriormente solicitar la calificación a el decreto 29-89 o 65-89.
             </p>
             <hr>
         </div>
-        <div class="row" v-show="!showRegister">
-            <div class="col-6 offset-md-3 shadow-lg p-5 mb-5 bg-white rounded">
+        <div
+            v-show="!showRegister"
+            class="row"
+        >
+            <div class="col-sm-12 col-md-6 offset-md-3 shadow-lg p-5 mb-5 bg-white rounded">
                 <form @submit.prevent="getDataSat">
                     <div class="form-group">
                         <label for="nit">
@@ -29,12 +32,12 @@
                             </small>
                         </label>
                         <input
+                            id="nit"
                             v-model="nit"
                             autofocus
-                            type="text"
+                            type="search"
                             required
                             class="form-control"
-                            id="nit"
                             :class="{ 'is-invalid': nitNotFound != null }"
                         >
                         <div class="invalid-feedback">
@@ -50,7 +53,10 @@
                 </form>
             </div>
         </div>
-        <div class="row" v-show="showRegister">
+        <div
+            v-show="showRegister"
+            class="row"
+        >
             <div class="col-md-5 order-md-2 mb-4">
                 <ul class="list-group">
                     <li class="list-group-item lh-condensed">
@@ -93,15 +99,16 @@
                 </ul>
             </div>
             <div class="col-md-7 order-md-1 shadow-lg px-5 pt-4 pb-5 mb-5 bg-white rounded">
-                <h4 class="mt-4 mb-3">
-                    Información adicional
-                </h4>
                 <form @submit.prevent="submit">
+                    <h4 class="mt-4 mb-3">
+                        <i class="fas fa-info-circle"></i>
+                        Información adicional
+                    </h4>
                     <div class="form-group">
                         <label for="representante">Representante Legal</label>
                         <v-select
-                            :options="state.representantes"
                             v-model="empresa.representante"
+                            :options="state.representantes"
                         >
                         </v-select>
                         <input
@@ -113,8 +120,8 @@
                     <div class="form-group">
                         <label for="establecimiento">Establecimiento</label>
                         <v-select
-                            :options="state.establecimientos"
                             v-model="empresa.establecimiento"
+                            :options="state.establecimientos"
                         >
                         </v-select>
                         <input
@@ -128,13 +135,13 @@
                         <div class="custom-control custom-radio">
                             <input
                                 id="decreto_1"
+                                v-model.number="empresa.decreto_id"
                                 name="decreto_1"
                                 type="radio"
                                 class="custom-control-input"
                                 required
                                 value="1"
                                 :class="{ 'is-invalid': state.errors.hasOwnProperty('decreto_id') }"
-                                v-model.number="empresa.decreto_id"
                             >
                             <label
                                 class="custom-control-label"
@@ -146,13 +153,13 @@
                         <div class="custom-control custom-radio">
                             <input
                                 id="decreto_2"
+                                v-model="empresa.decreto_id"
                                 name="decreto_1"
                                 type="radio"
                                 class="custom-control-input"
                                 required
                                 value="2"
                                 :class="{ 'is-invalid': state.errors.hasOwnProperty('decreto_id') }"
-                                v-model="empresa.decreto_id"
                             >
                             <label
                                 class="custom-control-label"
@@ -163,38 +170,45 @@
                             <ShowErrors :errors="state.errors.decreto_id" />
                         </div>
                     </div>
-                    <div class="form-group" v-if="typeof empresa.email == 'object'">
+                    <div
+                        v-if="typeof empresa.email == 'object'"
+                        class="form-group"
+                    >
                         <label for="email">Correo electrónico</label>
                         <input
-                            class="form-control"
                             id="email"
+                            v-model="empresa.email"
+                            class="form-control"
                             type="email"
                             required
                             :class="{ 'is-invalid': state.errors.hasOwnProperty('email') }"
-                            v-model="empresa.email"
                         >
                         <ShowErrors :errors="state.errors.email" />
                     </div>
+                    <h4 class="mt-5 mb-3">
+                        <i class="fas fa-user"></i>
+                        Cuenta
+                    </h4>
                     <div class="form-group">
                         <label for="password">Contraseña</label>
                         <input
-                            class="form-control"
                             id="password"
+                            v-model="empresa.password"
+                            class="form-control"
                             type="password"
                             required
                             :class="{ 'is-invalid': state.errors.hasOwnProperty('password') }"
-                            v-model="empresa.password"
                         >
                         <ShowErrors :errors="state.errors.password" />
                     </div>
                     <div class="form-group">
                         <label for="password-confirmed">Confirmar contraseña</label>
                         <input
-                            class="form-control"
                             id="password-confirmed"
+                            v-model="empresa.password_confirmation"
+                            class="form-control"
                             type="password"
                             required
-                            v-model="empresa.password_confirmation"
                         >
                     </div>
                     <button
@@ -247,7 +261,6 @@ const empresa = reactive({
     email: null,
     fecha_inscripcion: null,
     name: null,
-    nit: null,
     telefono: null,
     direccion: null,
     establecimiento: null,
@@ -259,7 +272,7 @@ const empresa = reactive({
 
 const state = reactive({
     establecimientos: [],
-    establecimientos: [],
+    representantes: [],
     errors: [],
 });
 
@@ -291,6 +304,7 @@ watch(() => empresa.decreto_id, (decreto) => {
 const getDataSat = () => {
     isVisible.value = true
     msg.value = "Consultando datos en la SAT..."
+    state.errors = []
     axios.get(import.meta.env.VITE_API_ENDPOINT + "/api/v1/f/sat/consulta?nit=" + nit.value)
         .then((response) => {
             isVisible.value = false
@@ -362,20 +376,20 @@ const submit = () => {
     msg.value = "Registrando usuario..."
 
     axios.post(import.meta.env.VITE_API_ENDPOINT + '/api/v1/f/register', empresa)
-    .then((response) => {
-        isVisible.value = false
-        store.auth(response.data)
-        router.push({ name: 'home' });
-    })
-    .catch((error) => {
-        isVisible.value = false
-        if(error.response.data.errors.hasOwnProperty("email")) {
-            toast.error(error.response.data.errors.email[0], {
-                position: "bottom-center",
-            })
-        }
-        state.errors = error.response.data.errors
-    })
+        .then((response) => {
+            isVisible.value = false
+            store.auth(response.data)
+            router.push({ name: 'home' });
+        })
+        .catch((error) => {
+            isVisible.value = false
+            if(error.response.data.errors.email) {
+                toast.error("Error al registrar el usuario: " + error.response.data.errors.email[0], {
+                    position: "bottom-center",
+                })
+            }
+            state.errors = error.response.data.errors
+        })
 };
 
 document.body.classList.remove("login-page");

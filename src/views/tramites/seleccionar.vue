@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row">        
         <div class="col-12">
             <div class="form-group">
                 <input
@@ -33,11 +33,21 @@
                 </div>
             </div>
         </div>
+        <div class="col-12">
+            <router-link :to="{ name: 'tramites.index' }">
+                <i class="fas fa-arrow-left"></i>
+                Volver a historial de trámites
+            </router-link>
+        </div>
     </div>
 </template>
 
 <script>
 import axios from '@/config/axios.js'
+import { useUserStore } from "@/store";
+
+const store = useUserStore();
+
 export default {
     data () {
         return {
@@ -52,7 +62,7 @@ export default {
         }
     },
     created () {
-        axios.get('/api/v1/f/tramites', { params: { decreto_id: this.$store.user.decreto_id } })
+        axios.get('/api/v1/f/tramites', { params: { decreto_id: store.user.decreto_id } })
             .then(response => {
                 this.tramites = response.data
             })
